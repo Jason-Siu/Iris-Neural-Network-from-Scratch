@@ -2,11 +2,11 @@ from sklearn import datasets
 import numpy as np
 
 
-np.random.seed(14)
+np.random.seed(15)
 
 def inputn():
     inputt = []
-    for i in range(10):
+    for i in range(30):
         inputt.append(x[i])
         inputt.append(x[i + 50])
         inputt.append(x[i + 100])
@@ -14,7 +14,7 @@ def inputn():
 
 def target():
     target = []
-    for i in range(10):
+    for i in range(30):
         target.append(y[i])
         target.append(y[i + 50])
         target.append(y[i + 100])
@@ -71,6 +71,16 @@ def makeguess(z):
         print("My guess is: " + str(names[1]))
     else:
         print("My guess is: " + str(names[2]))
+        
+def returnGuess(z):
+    index = 0 if z[0] > z[1] else 1
+    second = index if z[index] > z[2] else 2
+    if second == 0:
+        return names[0]
+    elif second == 1:
+        return names[1]
+    else:
+        return names[2]
     
 iris = datasets.load_iris()
 x = iris.data
@@ -78,7 +88,7 @@ y = iris.target
 practice = iris.target
 names = iris.target_names
 
-alpha = .15
+alpha = .05
 
 test_data = np.array(inputn())
 target = np.array(target())
@@ -95,6 +105,8 @@ second_bias = bias_h
 
 syn0 = weight_ih
 syn1 = weight_ho
+
+
 
 # Training loop
 def train(x, syn0, syn1, first_bias, second_bias):
@@ -113,12 +125,12 @@ def train(x, syn0, syn1, first_bias, second_bias):
     # backprop
     l2_delta = l2_error * nonlin(l2, deriv = True)
     
-    second_bias += alpha * nonlin(l2, deriv = True)
+    second_bias += alpha * l2_error
     
     l1_error = l2_delta.dot(syn1.T)
     l1_delta = l1_error * nonlin(l1,deriv=True)
     
-    first_bias += alpha * nonlin(l1,deriv=True)
+    first_bias += alpha * l1_error
     # adjust weights
     syn1 += alpha * l1.T.dot(l2_delta)
     syn0 += alpha * l0.T.dot(l1_delta)
@@ -130,10 +142,36 @@ for i in range(50000):
     
 go = True
 np.set_printoptions(formatter={'float': lambda x: "{0:0.10f}".format(x)})
+
 print()
+
+''' 
+    if you don't want to train, here are the weight matrices:
+    
+    syn0 = [[2.2408217095 -1.6853796665 5.5913811924 -0.9366177497]
+         [0.6090305537 -2.2210590652 3.3860760754 -0.4248610653]
+         [-4.3583983502 2.6291739327 -7.1529550442 -0.1713271684]
+         [-2.7078773548 2.4765996026 -4.9313664416 0.6101184294]]
+         
+    syn1 = [[9.9450263133 -12.7935363317 -5.1024261598]
+         [-7.2674701502 -6.2178006814 6.4532717444]
+         [-4.4043524385 7.1407092810 -7.7961001105]
+         [-0.8959132447 0.7941216092 0.5851137336]]
+         
+    the weights in this case, we randomly assign very small values,
+    and so they don't matter much
+    
+    but here they are anyways:
+    
+    first_bias = [0.022111141705110405, 0.022111141705110405, 0.022111141705110405, 0.022111141705110405]
+    second bias = [-0.004143583522698942, -0.004143583522698942, -0.004143583522698942]
+
+'''
+
 print("Testing time...")
 print()
 
+'''
 while go:
     print()
     index = int(input("Enter a number (between 0 - 149) : "))
@@ -146,7 +184,22 @@ while go:
     again = input("Go again? [y/n]  ")
     if again == 'n':
         go = False
+'''
+
+success = 0
+for i in range(150):
+    l0 = x[i]
+    l1 = nonlin(np.dot(l0,syn0) + first_bias)
+    l2 = nonlin(np.dot(l1,syn1) + second_bias)
     
+    if(str(returnGuess(l2)) == str(names[int(i / 50)])):
+        success += 1
+    else:
+        print(i)
+        
+        
+print(success/150)
+        
     
 
 
