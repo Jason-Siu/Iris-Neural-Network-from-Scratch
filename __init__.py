@@ -97,7 +97,7 @@ syn0 = weight_ih
 syn1 = weight_ho
 
 # Training loop
-def forward(x, syn0, syn1, first_bias, second_bias):
+def train(x, syn0, syn1, first_bias, second_bias):
     # input layer = test_data of 30 samples
     l0 = test_data
     
@@ -126,7 +126,7 @@ def forward(x, syn0, syn1, first_bias, second_bias):
 
 
 for i in range(50000):
-    forward(i, syn0, syn1, first_bias, second_bias)
+    train(i, syn0, syn1, first_bias, second_bias)
     
 go = True
 np.set_printoptions(formatter={'float': lambda x: "{0:0.10f}".format(x)})
