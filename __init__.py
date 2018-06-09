@@ -1,9 +1,11 @@
-from sklearn import datasets
+from sklearn import datasets # import dataset
 import numpy as np
 
-
+# seed randomness
 np.random.seed(15)
 
+# create target input vector
+# this could've been done more elegantly, but regardless it still works
 def inputn():
     inputt = []
     for i in range(30):
@@ -12,6 +14,8 @@ def inputn():
         inputt.append(x[i + 100])
     return inputt
 
+# defines target vector
+# again, could've been done more elegantly
 def target():
     target = []
     for i in range(30):
@@ -19,7 +23,8 @@ def target():
         target.append(y[i + 50])
         target.append(y[i + 100])
     return target
-    
+
+# initialize weights
 def initialize_weights(x,y):
     weight = []
     for i in range(x):
@@ -29,6 +34,7 @@ def initialize_weights(x,y):
         weight.append(inner)
     return weight
 
+# returns bias for the layers
 def getBiases(size):
     array = []
     bias = np.random.randn()
@@ -36,7 +42,7 @@ def getBiases(size):
         array.append(bias)
     return array
 
-
+# function that returns the target matrix based on classification
 def getTarget(x):
     res = []
     for i in range(x.size):
@@ -48,6 +54,7 @@ def getTarget(x):
             res += [[0,0,1]]
     return np.array(res)
 
+# returns vector form of classification
 def whatis(x):
     if x == 0:
         return [1,0,0]
@@ -56,12 +63,14 @@ def whatis(x):
     else:
         return [0,0,1]
 
+# sigmoid activation function
 def nonlin(x,deriv=False):
     if(deriv==True):
         return x*(1-x)
 
     return 1/(1+np.exp(-x))
 
+# finds the max index to make guess
 def makeguess(z):
     index = 0 if z[0] > z[1] else 1
     second = index if z[index] > z[2] else 2
@@ -72,6 +81,7 @@ def makeguess(z):
     else:
         print("My guess is: " + str(names[2]))
         
+# displays name of class
 def returnGuess(z):
     index = 0 if z[0] > z[1] else 1
     second = index if z[index] > z[2] else 2
@@ -81,28 +91,34 @@ def returnGuess(z):
         return names[1]
     else:
         return names[2]
-    
+# load dataset and define variables
 iris = datasets.load_iris()
 x = iris.data
 y = iris.target
 practice = iris.target
 names = iris.target_names
 
+# learning rate
 alpha = .05
 
+#define test input matrix and target vectors
 test_data = np.array(inputn())
 target = np.array(target())
- 
+
+# initialize weights and biases
 weight_ih = np.array(initialize_weights(4, 4))
 weight_ho = np.array(initialize_weights(4, 3))
 bias_i = getBiases(4)
 bias_h = getBiases(3)
 
+# define target matrix
 y = getTarget(target)
 
+# initialize biases
 first_bias = bias_i
 second_bias = bias_h
 
+#initialize weights
 syn0 = weight_ih
 syn1 = weight_ho
 
@@ -136,7 +152,7 @@ def train(x, syn0, syn1, first_bias, second_bias):
     syn0 += alpha * l0.T.dot(l1_delta)
 
 
-
+# training loop
 for i in range(50000):
     train(i, syn0, syn1, first_bias, second_bias)
     
@@ -186,6 +202,7 @@ while go:
         go = False
 '''
 
+# enter an index: prints predicted output
 success = 0
 for i in range(150):
     l0 = x[i]
