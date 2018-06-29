@@ -1,4 +1,7 @@
 # Iris-Neural-Network-from-Scratch
+
+**The network itself was made WITHOUT the use of machine learning libraries such as Tensorflow or Keras**
+
 This is a neural network that categorizes the types of irises from a very famous data set without the help of machine learning libraries.
 It uses cross entropy error, and softmax activation.
 For the hidden layer, it uses sigmoid. I used stochastic gradient descent, and small number of epochs to indicate where a neural network should stop, and where overfitting may occur
