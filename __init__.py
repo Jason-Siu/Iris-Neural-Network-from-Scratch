@@ -35,6 +35,12 @@ def softmax(x):
     exp = np.exp(shiftx)
     return exp/exp.sum()
 
+# dropout function
+def dropout(a, prob):
+    shape = a.shape[0]
+    vec = np.random.choice([0,1], size = (shape,1), p = [prob, 1-prob])
+    return vec * a
+
 #load dataset
 iris = datasets.load_iris()
 data = iris.data
@@ -56,16 +62,16 @@ bias1 = np.random.randn(3,1) /2
 xarr = []
 yarr = []
 
-# these values come from randomly assigning, and picking values which result in a converging network
-# from which of these values that the network converges to less error
-rate_syn = 0.013701548202479293 
-rate_bias = 0.12554515949408945
+rate_syn = 0.1
+rate_bias = 0.1
 
 for yo in range(200):
     for i in range(150):
         # forward prop
         l0 = data[i][None].T
+        l0 = dropout(l0, .25)
         l1 = nonlin(np.dot(syn0, l0) + bias0) 
+        l1 = dropout(l1,.25)
         l2 = softmax(np.dot(syn1, l1) + bias1) 
         # setup target one hot encoded vector
         target = np.zeros([3,1])
